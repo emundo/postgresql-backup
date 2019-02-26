@@ -117,14 +117,6 @@ tail -F /postgres_backup.log &
 if [ -n "${INIT_BACKUP}" ]; then
 		echo "=> Create a backup on the startup"
 		/backup.sh
-elif [ -n "${INIT_RESTORE_LATEST}" ]; then
-		echo "=> Restore latest backup"
-		until nc -z $POSTGRES_HOST $POSTGRES_PORT
-		do
-				echo "waiting database container..."
-				sleep 1
-		done
-		ls -d -1 /backup/${POSTGRES_DB}/* | tail -1 | xargs /restore.sh
 fi
 
 echo "${CRON_TIME} export MAX_BACKUPS=${MAX_BACKUPS}; export POSTGRES_DB=${POSTGRES_DB}; /backup.sh >> /postgres_backup.log 2>&1" > /crontab.conf
